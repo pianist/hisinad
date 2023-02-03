@@ -1,6 +1,5 @@
 #pragma once
 
-#include "config.h"
 #include "compat.h"
 
 #if HISILICON_SDK_GEN >= 2
@@ -72,6 +71,8 @@ struct SensorISP {
     ISP_BAYER_FORMAT_E isp_bayer;
 };
 
+extern const char *cfg_sensor_possible_values_bayer[];
+
 struct SensorVIChn {
     int cap_rect_x;
     int cap_rect_y;
@@ -116,4 +117,8 @@ struct SensorConfig {
     // [vi_chn]
     struct SensorVIChn vichn;
 };
+
+int cfg_sensor_read(const char* fname, struct SensorConfig* sc);
+const char* cfg_sensor_read_error_value();
+
 

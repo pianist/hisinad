@@ -15,9 +15,25 @@ unsigned cfg_proc_err_line_pos()
     return __cfg_proc_line_pos;
 }
 
+#define CASE_ERR_MSG(err_code) case err_code: return #err_code;
+
+const char* cfg_proc_err_msg(int err)
+{
+    switch (err)
+    {
+        CASE_ERR_MSG(CFG_PROC_IO)
+        CASE_ERR_MSG(CFG_PROC_SYNTAX)
+        CASE_ERR_MSG(CFG_PROC_WRONG_SECTION)
+        CASE_ERR_MSG(CFG_PROC_KEY_BAD)
+        CASE_ERR_MSG(CFG_PROC_KEY_DUP)
+        CASE_ERR_MSG(CFG_PROC_VALUE_BAD)
+        default: return "UNKNOWN";
+    }
+}
+
 static const char* __space_chars = " \t\n\r";
 static const char* __allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789";
-static const char* __allowed_chars_values = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789/.";
+static const char* __allowed_chars_values = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789/.|";
 
 int cfg_proc_read(const char* fname, cfg_proc_new_section _new_sec, cfg_proc_new_key_value _new_kv)
 {
@@ -52,9 +68,15 @@ int cfg_proc_read(const char* fname, cfg_proc_new_section _new_sec, cfg_proc_new
                 {
                     fclose(f);
                     __cfg_proc_line_pos = p - buf + 1;
-                    return CFG_PROC_WRONG_SECTION;
+                    return CFG_PROC_SYNTAX;
                 }
-                _new_sec(sec_name);
+                int r = _new_sec(sec_name);
+                if (r < 0)
+                {
+                    fclose(f);
+                    __cfg_proc_line_pos = sec_name - buf + 1;
+                    return r;
+                }
                 p++;
             }
             else
@@ -129,7 +151,13 @@ int cfg_proc_read(const char* fname, cfg_proc_new_section _new_sec, cfg_proc_new
 
         *val_end = 0;
 
-        _new_kv(key_name, val);
+        int r = _new_kv(key_name, val);
+        if (r < 0)
+        {
+            fclose(f);
+            __cfg_proc_line_pos = p - buf + 1;
+            return r;
+        }
     }
 
     fclose(f);

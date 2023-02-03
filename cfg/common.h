@@ -18,6 +18,7 @@ int cfg_proc_read(const char* fname, cfg_proc_new_section _new_sec, cfg_proc_new
 unsigned cfg_proc_err_line_num();
 unsigned cfg_proc_err_line_pos();
 
+const char* cfg_proc_err_msg(int err);
 
 
 #endif // __CFG_COMMON_H__
