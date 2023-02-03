@@ -17,6 +17,7 @@ unsigned cfg_proc_err_line_pos()
 
 static const char* __space_chars = " \t\n\r";
 static const char* __allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789";
+static const char* __allowed_chars_values = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_0123456789/.";
 
 int cfg_proc_read(const char* fname, cfg_proc_new_section _new_sec, cfg_proc_new_key_value _new_kv)
 {
@@ -91,8 +92,32 @@ int cfg_proc_read(const char* fname, cfg_proc_new_section _new_sec, cfg_proc_new
         while (*p && strchr(__space_chars, *p)) ++p;
 
         char* val = p;
-        while (*p && strchr(__allowed_chars, *p)) ++p;
-        char* val_end = p;
+        char* val_end = val;
+
+        if (('"' == *p) || ('\'' == *p) || ('`' == *p))
+        {
+            char open_quot_char = *p;
+
+            p++;
+            val++;
+
+            while (*p && (*p != open_quot_char)) ++p;
+
+            if (*p != open_quot_char)
+            {
+                fclose(f);
+                __cfg_proc_line_pos = p - buf + 1;
+                return CFG_PROC_SYNTAX;
+            }
+
+            val_end = p;
+            p++;
+        }
+        else
+        {
+            while (*p && strchr(__allowed_chars_values, *p)) ++p;
+            val_end = p;
+        }
 
         while (*p && strchr(__space_chars, *p)) ++p;
         if (*p && (*p != ';') && (*p != '#'))

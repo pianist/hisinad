@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 {
     if (argc != 2)
     {
-        fprintf(stderr, "Usage: ./test_cfg_reader config.ini\n");
+        printf("Usage: ./test_cfg_reader config.ini\n");
         return -1;
     }
 
@@ -28,17 +28,17 @@ int main(int argc, char** argv)
     {
         case CFG_PROC_IO:
         {
-            fprintf(stderr, "I/O error, %d: %s\n", errno, strerror(errno));
+            printf("I/O error, %d: %s\n", errno, strerror(errno));
             break;
         }
         case CFG_PROC_SYNTAX:
         {
-            fprintf(stderr, "Syntax error at line %u, pos %u\n", cfg_proc_err_line_num(), cfg_proc_err_line_pos());
+            printf("Syntax error at line %u, pos %u\n", cfg_proc_err_line_num(), cfg_proc_err_line_pos());
             break;
         }
         case CFG_PROC_WRONG_SECTION:
         {
-            fprintf(stderr, "Wrong section name at line %u, pos %u\n", cfg_proc_err_line_num(), cfg_proc_err_line_pos());
+            printf("Wrong section name at line %u, pos %u\n", cfg_proc_err_line_num(), cfg_proc_err_line_pos());
             break;
         }
         case CFG_PROC_OK:
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         }
         default:
         {
-            fprintf(stderr, "Unknown error %d\n", ret);
+            printf("Unknown error %d\n", ret);
             break;
         }
     }
