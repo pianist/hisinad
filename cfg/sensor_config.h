@@ -108,7 +108,13 @@ struct SensorVIChn {
     int frame_rate;
 };
 
+extern const char *cfg_sensor_vals_vichn_capsel[];
+extern const char *cfg_sensor_vals_vichn_pixel_format[];
+
 struct SensorConfig {
+    // VB
+    unsigned vb_cnt;
+
     // [sensor]
     char sensor_type[128];
 #if HISILICON_SDK_GEN >= 2
