@@ -62,6 +62,25 @@ struct SensorVIDEV {
     unsigned int dev_rect_h;
 };
 
+extern const char *cfg_sensor_vals_bool[];
+extern const char *cfg_sensor_vals_vi_input_mod[];
+extern const char *cfg_sensor_vals_vi_work_mod[];
+extern const char *cfg_sensor_vals_vi_combine_mode[];
+extern const char *cfg_sensor_vals_vi_comp_mode[];
+extern const char *cfg_sensor_vals_vi_clock_edge[];
+extern const char *cfg_sensor_vals_vi_scan_mode[];
+extern const char *cfg_sensor_vals_vi_data_seq[];
+extern const char *cfg_sensor_vals_vi_vsync[];
+extern const char *cfg_sensor_vals_vi_vsync_neg[];
+extern const char *cfg_sensor_vals_vi_hsync[];
+extern const char *cfg_sensor_vals_vi_hsync_neg[];
+extern const char *cfg_sensor_vals_vi_vsync_valid[];
+extern const char *cfg_sensor_vals_vi_vsync_valid_neg[];
+extern const char *cfg_sensor_vals_vi_fix_code[];
+extern const char *cfg_sensor_vals_vi_field_polar[];
+extern const char *cfg_sensor_vals_vi_data_path[];
+extern const char *cfg_sensor_vals_vi_input_data_type[];
+
 struct SensorISP {
     int isp_x;
     int isp_y;
@@ -71,7 +90,7 @@ struct SensorISP {
     ISP_BAYER_FORMAT_E isp_bayer;
 };
 
-extern const char *cfg_sensor_possible_values_bayer[];
+extern const char *cfg_sensor_vals_isp_bayer[];
 
 struct SensorVIChn {
     int cap_rect_x;
@@ -119,6 +138,7 @@ struct SensorConfig {
 };
 
 int cfg_sensor_read(const char* fname, struct SensorConfig* sc);
+const char* cfg_sensor_read_error_key();
 const char* cfg_sensor_read_error_value();
 
 

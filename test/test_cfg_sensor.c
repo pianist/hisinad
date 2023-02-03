@@ -33,17 +33,17 @@ int main(int argc, char** argv)
             }
             else if (ret == CFG_PROC_KEY_BAD)
             {
-                printf("Wrong key \"%s\"\n", cfg_sensor_read_error_value());
+                printf("Wrong key \"%s\"\n", cfg_sensor_read_error_key());
             }
             else if (ret == CFG_PROC_VALUE_BAD)
             {
-                printf("Wrong value \"%s\"\n", cfg_sensor_read_error_value());
+                printf("Wrong value \"%s\" for %s\n", cfg_sensor_read_error_value(), cfg_sensor_read_error_key());
             }
         }
         return ret;
     }
 
-    printf("isp_image.bayer = %s(%d)\n", cfg_sensor_possible_values_bayer[sc.isp.isp_bayer], sc.isp.isp_bayer);
+    printf("isp_image.bayer = %s(%d)\n", cfg_sensor_vals_isp_bayer[sc.isp.isp_bayer], sc.isp.isp_bayer);
 
     return 0;
 }
