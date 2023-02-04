@@ -17,3 +17,8 @@ add_executable(test_cfg_sensor test/test_cfg_sensor.c cfg/common.c cfg/sensor_co
 
 add_executable(test_pumap_vi test/test_pumap_vi.c pumap/vi.c)
 
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL armv5l)
+message(STATUS "Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+
+endif()
+
