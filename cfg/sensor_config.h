@@ -63,23 +63,23 @@ struct SensorVIDEV {
 };
 
 extern const char *cfg_sensor_vals_bool[];
-extern const char *cfg_sensor_vals_vi_input_mod[];
-extern const char *cfg_sensor_vals_vi_work_mod[];
-extern const char *cfg_sensor_vals_vi_combine_mode[];
-extern const char *cfg_sensor_vals_vi_comp_mode[];
-extern const char *cfg_sensor_vals_vi_clock_edge[];
-extern const char *cfg_sensor_vals_vi_scan_mode[];
-extern const char *cfg_sensor_vals_vi_data_seq[];
-extern const char *cfg_sensor_vals_vi_vsync[];
-extern const char *cfg_sensor_vals_vi_vsync_neg[];
-extern const char *cfg_sensor_vals_vi_hsync[];
-extern const char *cfg_sensor_vals_vi_hsync_neg[];
-extern const char *cfg_sensor_vals_vi_vsync_valid[];
-extern const char *cfg_sensor_vals_vi_vsync_valid_neg[];
-extern const char *cfg_sensor_vals_vi_fix_code[];
-extern const char *cfg_sensor_vals_vi_field_polar[];
-extern const char *cfg_sensor_vals_vi_data_path[];
-extern const char *cfg_sensor_vals_vi_input_data_type[];
+extern const char *cfg_sensor_vals_videv_input_mod[];
+extern const char *cfg_sensor_vals_videv_work_mod[];
+extern const char *cfg_sensor_vals_videv_combine_mode[];
+extern const char *cfg_sensor_vals_videv_comp_mode[];
+extern const char *cfg_sensor_vals_videv_clock_edge[];
+extern const char *cfg_sensor_vals_videv_scan_mode[];
+extern const char *cfg_sensor_vals_videv_data_seq[];
+extern const char *cfg_sensor_vals_videv_vsync[];
+extern const char *cfg_sensor_vals_videv_vsync_neg[];
+extern const char *cfg_sensor_vals_videv_hsync[];
+extern const char *cfg_sensor_vals_videv_hsync_neg[];
+extern const char *cfg_sensor_vals_videv_vsync_valid[];
+extern const char *cfg_sensor_vals_videv_vsync_valid_neg[];
+extern const char *cfg_sensor_vals_videv_fix_code[];
+extern const char *cfg_sensor_vals_videv_field_polar[];
+extern const char *cfg_sensor_vals_videv_data_path[];
+extern const char *cfg_sensor_vals_videv_input_data_type[];
 
 struct SensorISP {
     int isp_x;
@@ -146,5 +146,7 @@ struct SensorConfig {
 int cfg_sensor_read(const char* fname, struct SensorConfig* sc);
 const char* cfg_sensor_read_error_key();
 const char* cfg_sensor_read_error_value();
+
+void cfg_sensor_pretty_print(const struct SensorConfig* sc);
 
 

@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         return ret;
     }
 
-    printf("isp_image.bayer = %s(%d)\n", cfg_sensor_vals_isp_bayer[sc.isp.isp_bayer], sc.isp.isp_bayer);
+    cfg_sensor_pretty_print(&sc);
 
     return 0;
 }
