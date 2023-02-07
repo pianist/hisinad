@@ -1,6 +1,7 @@
 #pragma once
 
 #include "compat.h"
+#include "common.h"
 
 #if HISILICON_SDK_GEN >= 2
 struct SensorMIPI {

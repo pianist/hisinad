@@ -122,7 +122,6 @@ static HI_S32 SYS_GetPicSize(VIDEO_NORM_E enNorm, PIC_SIZE_E enPicSize, SIZE_S *
     return HI_SUCCESS;
 }
 
-
 #define VB_HEADER_STRIDE    16
 
 #define VB_PIC_HEADER_SIZE(Width, Height, Type, size)\
@@ -137,23 +136,11 @@ static HI_S32 SYS_GetPicSize(VIDEO_NORM_E enNorm, PIC_SIZE_E enPicSize, SIZE_S *
         }\
     }while(0)
 
-static HI_U32 CalcPicVbBlkSize(VIDEO_NORM_E enNorm, PIC_SIZE_E enPicSize, PIXEL_FORMAT_E enPixFmt, HI_U32 u32AlignWidth)
+static HI_U32 CalcPicVbBlkSize(uint32_t width, uint32_t height, PIXEL_FORMAT_E enPixFmt, HI_U32 u32AlignWidth)
 {
-    HI_S32 s32Ret = HI_FAILURE;
-    SIZE_S stSize;
-
-    s32Ret = SYS_GetPicSize(enNorm, enPicSize, &stSize);
-    if (HI_SUCCESS != s32Ret)
-    {
-        return 0;
-    }
-
-    HI_U32 u32VbSize = (CEILING_2_POWER(stSize.u32Width, u32AlignWidth) * CEILING_2_POWER(stSize.u32Height, u32AlignWidth) * ((PIXEL_FORMAT_YUV_SEMIPLANAR_422 == enPixFmt) ? 2 : 1.5));
-
-    HI_U32 u32HeaderSize;
-    VB_PIC_HEADER_SIZE(stSize.u32width, stSize.u32Height, enPixFmt, u32HeaderSize);
-    u32VbSize += u32HeaderSize;
-    return u32VbSize;
+    return (CEILING_2_POWER(width, u32AlignWidth) * \
+            CEILING_2_POWER(height, u32AlignWidth) * \
+           ((PIXEL_FORMAT_YUV_SEMIPLANAR_422 == enPixFmt)?2:1.5));
 }
 
 int sdk_init(const struct SensorConfig* sc)
@@ -161,24 +148,32 @@ int sdk_init(const struct SensorConfig* sc)
     VB_CONF_S stVbConf;
     memset(&stVbConf, 0, sizeof(VB_CONF_S));
 
-    if (sc)
+    if (sc && sc->vb_cnt)
     {
         stVbConf.u32MaxPoolCnt = 128;
 
-        //unsigned i;
-        //for (i = 0; i < vi_cnt && i < VB_MAX_COMM_POOLS; ++i)
-        //{
-        //    // TODO: move VIDEO_ENCODING_MODE_NTSC, PIXEL_FORMAT_YUV_PLANAR_422 to config
-        //    __sdk_last_call = "CalcPicVbBlkSize";
-        //    uint32_t u32BlkSize = CalcPicVbBlkSize(VIDEO_ENCODING_MODE_NTSC, vi_pic_szs[i], PIXEL_FORMAT_YUV_SEMIPLANAR_422, SYS_ALIGN_WIDTH);
-        //    stVbConf.astCommPool[i].u32BlkSize = u32BlkSize;
-        //    stVbConf.astCommPool[i].u32BlkCnt = 6;
-        //    printf("u32BlkSize %u\n", u32BlkSize);
-        //}
+        log_info("VbConf: VbCnt = %u", sc->vb_cnt);
+
+        unsigned vb_pool_i = 0;
+        for ( ; vb_pool_i < 1; vb_pool_i++)
+        {
+            log_info("VbConf: PixFormat = %s(%d)", cfg_sensor_vals_vichn_pixel_format[sc->vichn.pix_format], sc->vichn.pix_format);
+            stVbConf.astCommPool[vb_pool_i].u32BlkSize = CalcPicVbBlkSize(sc->isp.isp_w, sc->isp.isp_h, sc->vichn.pix_format, SYS_ALIGN_WIDTH);
+            stVbConf.astCommPool[vb_pool_i].u32BlkCnt = sc->vb_cnt;
+        }
+
+        /* hist */
+        stVbConf.astCommPool[vb_pool_i].u32BlkSize = (196*4);
+        stVbConf.astCommPool[vb_pool_i].u32BlkCnt = 6;
+
+        for (unsigned i = 0; i <= vb_pool_i; ++i)
+        {
+            log_info("VbConf pool %u: %u * %u", i, stVbConf.astCommPool[i].u32BlkSize, stVbConf.astCommPool[i].u32BlkCnt);
+        }
     }
     else
     {
-        log_info("No video buffers allocated. Only audio?");
+        log_info("No video buffers allocated ([vb_conf] section, VbCnt). Only audio?");
     }
 
     int s32Ret = platform_v1_mpi_sys_init(&stVbConf);
