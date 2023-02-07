@@ -66,7 +66,7 @@ int sdk_sensor_init(const struct SensorConfig* sc)
     }
 }
 
-int sdk_sensor_done()
+void sdk_sensor_done()
 {
     sensor_unregister_callback();
     dlclose(libsns_so);

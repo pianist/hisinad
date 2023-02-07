@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <signal.h>
+#include <unistd.h>
 #include <aux/logger.h>
 #include <cfg/sensor_config.h>
 
@@ -65,15 +66,29 @@ int main(int argc, char** argv)
     ret = sdk_sensor_init(&sc);
     if (ret < 0)
     {
-        log_error("sdk_sensor_init() failed", ret);
+        log_error("sdk_sensor_init() failed: %d", ret);
         sdk_done();
         return ret;
     }
 
-    // TODO: isp libs, isp, vi, vpss, venc...
+    ret = sdk_isp_init(&sc);
+    if (!ret)
+    {
+        log_info("Now sleep for 100 s...");
+        sleep(10);
+        sleep(10);
+        sleep(10);
 
+    // TODO: vi, vpss, venc...
+
+    }
+    else
+    {
+        log_error("sdk_isp_init() failed: %d", ret);
+    }
+
+    sdk_isp_done();
     sdk_sensor_done();
-
     sdk_done();
 
     return 0;
