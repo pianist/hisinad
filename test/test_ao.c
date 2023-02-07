@@ -3,12 +3,13 @@
 #include <string.h>
 
 #include <signal.h>
+#include <aux/logger.h>
 
 int stop_flag = 0;
 
 void action_on_sognal(int signum)
 {
-    printf("STOP\n");
+    log_info("STOP");
     stop_flag = 1;
 }
 
@@ -16,7 +17,7 @@ int main(int argc, char** argv)
 {
     if (argc < 2)
     {
-        fprintf(stderr, "./test_ao file_to_play.pcm\n");
+        log_error("./test_ao file_to_play.pcm");
         return -1;
 
     }
@@ -26,29 +27,29 @@ int main(int argc, char** argv)
     int ret = sdk_init(0);
     if (ret < 0)
     {
-        fprintf(stderr, "sdk_init() failed at %s: 0x%X\n", __sdk_last_call, ret);
+        log_error("sdk_init() failed at %s: 0x%X", __sdk_last_call, ret);
         return -1;
     }
 
-    printf("Warning! If segfaults here - broken libmpi.so/stat, please use patched version and libhisicompat.\n");
+    log_warn("Warning! If segfaults here - broken libmpi.so/stat, please use patched version and libhisicompat.");
     ret = sdk_audio_init(0, PT_LPCM, 48000);
     if (ret < 0)
     {
-        fprintf(stderr, "init_sdk() failed at %s: 0x%X\n", __sdk_last_call, ret);
+        log_crit("init_sdk() failed at %s: 0x%X", __sdk_last_call, ret);
         return -1;
     }
 
     FILE* f = fopen(argv[1], "r");
     if (f)
     {
-        printf("Now play %s!\n", argv[1]);
+        log_info("Now play %s!", argv[1]);
         sdk_audio_play(f, &stop_flag);
         fclose(f);
     }
     else
     {
-        printf("ERROR %d\n", errno);
-        printf("Error %d: %s\n", errno, strerror(errno));
+        log_error("ERROR %d", errno);
+        log_error("Error %d: %s", errno, strerror(errno));
     }
 
     sdk_audio_done();

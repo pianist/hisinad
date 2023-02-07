@@ -6,6 +6,8 @@
 
 extern const char* __sdk_last_call;
 
+void set_verbose_level(int lvl);
+
 int sdk_init(const struct SensorConfig* sc);
 void sdk_done();
 

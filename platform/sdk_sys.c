@@ -1,7 +1,7 @@
 #include "sdk.h"
-
 #include <stdint.h>
 #include <string.h>
+#include <aux/logger.h>
 
 #include "hi_common.h"
 #include "hi_comm_sys.h"
@@ -176,6 +176,10 @@ int sdk_init(const struct SensorConfig* sc)
         //    printf("u32BlkSize %u\n", u32BlkSize);
         //}
     }
+    else
+    {
+        log_info("No video buffers allocated. Only audio?");
+    }
 
     int s32Ret = platform_v1_mpi_sys_init(&stVbConf);
 
@@ -187,15 +191,3 @@ void sdk_done()
     HI_MPI_SYS_Exit();
     HI_MPI_VB_Exit();
 }
-
-/* ugly sdk hack: start */
-#define MAP_FAILED ((void *)-1)
-
-void *mmap64(void *start, size_t len, int prot, int flags, int fd, off_t off);
-int munmap(void *__addr, size_t __len);
-
-void *mmap(void *start, size_t len, int prot, int flags, int fd, uint32_t off) {
-    return mmap64(start, len, prot, flags, fd, off);
-}
-/* ugly sdk hack: end */
-

@@ -17,9 +17,11 @@ add_executable(test_cfg_sensor test/test_cfg_sensor.c cfg/common.c cfg/sensor_co
 
 add_executable(test_pumap_vi test/test_pumap_vi.c pumap/vi.c)
 
+add_library(hisinad_aux STATIC aux/logger.c aux/system.c)
+
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL armv5l)
 message(STATUS "Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
-add_executable(test_ao test/test_ao.c platform/sdk_sys.c platform/sdk_audio.c)
-target_link_libraries(test_ao ${VENDOR_SDK_LIBRARIES} gcc_s hisicompat)
+add_executable(test_ao test/test_ao.c platform/sdk_sys.c platform/sdk_audio.c platform/sdk_ugly.c)
+target_link_libraries(test_ao ${VENDOR_SDK_LIBRARIES} gcc_s hisicompat hisinad_aux)
 endif()
 
