@@ -27,7 +27,7 @@ message(STATUS "Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 add_executable(test_ao test/test_ao.c platform/sdk_sys.c platform/sdk_audio.c platform/sdk_ugly.c)
 target_link_libraries(test_ao ${VENDOR_SDK_LIBRARIES} gcc_s hisicompat hisinad_aux hisinad_cfg)
 
-add_executable(test_jpeg test/test_jpeg.c cfg/common.c platform/sdk_sys.c platform/sdk_audio.c platform/sdk_ugly.c)
+add_executable(test_jpeg test/test_jpeg.c cfg/common.c platform/sdk_sys.c platform/sdk_audio.c platform/sdk_ugly.c platform/sdk_sensor.c)
 target_link_libraries(test_jpeg ${VENDOR_SDK_LIBRARIES} gcc_s hisicompat hisinad_aux hisinad_cfg)
 
 endif()

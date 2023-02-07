@@ -18,6 +18,10 @@ void sdk_audio_done();
 int sdk_audio_play(FILE* f, int* stop_flag);
 
 
+int sdk_sensor_init(const struct SensorConfig* sc);
+int sdk_sensor_done();
+
+
 #if HISILICON_SDK_GEN == 1
 //#include <platform/hi_v1/sdk.h>
 #elif HISILICON_SDK_GEN == 2
