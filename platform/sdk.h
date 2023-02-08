@@ -20,6 +20,8 @@ int sdk_audio_play(FILE* f, int* stop_flag);
 
 int sdk_sensor_init(const struct SensorConfig* sc);
 int sdk_isp_init(const struct SensorConfig* sc);
+int sdk_vi_init(const struct SensorConfig* sc);
+void sdk_vi_done();
 void sdk_isp_done();
 void sdk_sensor_done();
 

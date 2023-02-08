@@ -15,6 +15,30 @@ void action_on_signal(int signum)
     stop_flag = 1;
 }
 
+void print_error(int ret)
+{
+    if (-1 == ret)
+    {
+        log_error("I/O error, %d: %s", errno, strerror(errno));
+    }
+    else
+    {
+        log_error("Error %s(%d) at line %u, pos %u", cfg_proc_err_msg(ret), ret, cfg_proc_err_line_num(), cfg_proc_err_line_pos());
+        if (ret == CFG_PROC_WRONG_SECTION)
+        {
+            log_error("Wrong section name [%s]", cfg_sensor_read_error_value());
+        }
+        else if (ret == CFG_PROC_KEY_BAD)
+        {
+            log_error("Wrong key \"%s\"", cfg_sensor_read_error_key());
+        }
+        else if (ret == CFG_PROC_VALUE_BAD)
+        {
+            log_error("Wrong value \"%s\" for %s", cfg_sensor_read_error_value(), cfg_sensor_read_error_key());
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     if (argc < 2)
@@ -33,26 +57,7 @@ int main(int argc, char** argv)
 
     if (ret < 0)
     {
-        if (-1 == ret)
-        {
-            log_error("I/O error, %d: %s", errno, strerror(errno));
-        }
-        else
-        {
-            log_error("Error %s(%d) at line %u, pos %u", cfg_proc_err_msg(ret), ret, cfg_proc_err_line_num(), cfg_proc_err_line_pos());
-            if (ret == CFG_PROC_WRONG_SECTION)
-            {
-                log_error("Wrong section name [%s]", cfg_sensor_read_error_value());
-            }
-            else if (ret == CFG_PROC_KEY_BAD)
-            {
-                log_error("Wrong key \"%s\"", cfg_sensor_read_error_key());
-            }
-            else if (ret == CFG_PROC_VALUE_BAD)
-            {
-                log_error("Wrong value \"%s\" for %s", cfg_sensor_read_error_value(), cfg_sensor_read_error_key());
-            }
-        }
+        print_error(ret);
         return ret;
     }
 
@@ -72,19 +77,25 @@ int main(int argc, char** argv)
     }
 
     ret = sdk_isp_init(&sc);
+    if (ret < 0)
+    {
+        log_error("sdk_isp_init() failed: %d", ret);
+        sdk_sensor_done();
+        sdk_done();
+        return ret;
+    }
+
+    ret = sdk_vi_init(&sc);
+    
     if (!ret)
     {
+
+        
         log_info("Now sleep for 100 s...");
         sleep(10);
         sleep(10);
         sleep(10);
 
-    // TODO: vi, vpss, venc...
-
-    }
-    else
-    {
-        log_error("sdk_isp_init() failed: %d", ret);
     }
 
     sdk_isp_done();
